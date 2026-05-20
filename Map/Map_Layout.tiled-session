@@ -1,0 +1,32 @@
+{
+    "activeFile": "MapLayoutDungeons.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "MapLayoutDungeons.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 456.5,
+                "y": 414.5
+            }
+        },
+        "tilesheet_finale.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/adrie/Documents/Semestre2/POO/LayoutgameProject/Tuiles",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "tilesheet_finale.tsx",
+        "MapLayoutDungeons.tmx"
+    ],
+    "project": "Map_Layout.tiled-project",
+    "recentFiles": [
+        "tilesheet_finale.tsx",
+        "MapLayoutDungeons.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
