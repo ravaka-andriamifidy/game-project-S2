@@ -34,7 +34,3 @@ class GameApplication extends PortableApplication{
     g.drawSchoolLogo()
   }
 }
-
-object GameApplication extends App{
-  new GameApplication()
-}
