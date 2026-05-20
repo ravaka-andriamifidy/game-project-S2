@@ -1,0 +1,5 @@
+package map
+
+class MapLoader {
+
+}
