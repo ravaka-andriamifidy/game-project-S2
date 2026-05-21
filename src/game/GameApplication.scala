@@ -27,7 +27,7 @@ class GameApplication extends PortableApplication{
     tileRender = new TileRender()
     
     // create Chaser
-     chaser.chaser(10,10)
+    chaser.chaser(10,10)
     //create Player
     player.player(10,5)
   }

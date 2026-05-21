@@ -33,7 +33,7 @@ class Player extends DrawableObject {
 
   def player(x: Int, y: Int): Unit = {
     chaserInit(new Vector2(SPRITE_WIDTH * x, SPRITE_HEIGHT * y))
-    mudrySprite = new Spritesheet("game-project-S2/SpriteSheet/MudrySpriteNoBGFinal.png", SPRITE_WIDTH, SPRITE_HEIGHT)
+    mudrySprite = new Spritesheet("SpriteSheet/MudrySpriteNoBGFinal.png", SPRITE_WIDTH, SPRITE_HEIGHT)
   }
   /**
    * Create the chaser at the start position

@@ -37,7 +37,7 @@ class Chaser extends DrawableObject {
    */
   def chaser(x: Int, y: Int): Unit = {
     chaserInit(new Vector2(SPRITE_WIDTH * x, SPRITE_HEIGHT * y))
-    pythonSprite = new Spritesheet("game-project-S2/SpriteSheet/PythonSpriteSheetNoBg.png", SPRITE_WIDTH, SPRITE_HEIGHT)
+    pythonSprite = new Spritesheet("SpriteSheet/PythonSpriteSheetNoBg.png", SPRITE_WIDTH, SPRITE_HEIGHT)
   }
   /**
    * Create the chaser at the start position
