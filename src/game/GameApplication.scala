@@ -30,7 +30,3 @@ class GameApplication extends PortableApplication{
     player.draw(g)
   }
 }
-
-object GameApplication extends App{
-  new GameApplication()
-}
