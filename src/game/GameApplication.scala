@@ -4,32 +4,37 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
+import graphics.TileRender
+import com.badlogic.gdx.math.Vector2
+import ch.hevs.gdx2d.lib.utils.Logger
+import com.badlogic.gdx.Input
 
 class GameApplication extends PortableApplication{
   var radius = 5
   var speed = 1
-  var screenHeight, screenWidth = 0
+  var tileRender: TileRender = _
 
+
+  /**
+   * Initialize the application
+   */
   override def onInit(): Unit = {
     // Sets the window title
-    setTitle("Simple demo, mui 2013")
-
-    screenHeight = Gdx.graphics.getHeight
-    screenWidth = Gdx.graphics.getWidth
+    setTitle("Saint-Mudry: What's Yours is Mine")
+    tileRender = new TileRender()
   }
 
+  /**
+   * Render all the elements in the graphic with 60FPS
+   * @param g, Graphics
+   */
   override def onGraphicRender(g: GdxGraphics): Unit = {
     // Clears the screen
     g.clear()
-    g.drawAntiAliasedCircle(screenWidth / 2, screenHeight / 2, radius, Color.BLUE)
 
-    // If reaching max or min size, invert the growing direction
-    if (radius >= 100 || radius <= 3) {
-      speed *= -1
-    }
-
-    // Modify the radius
-    radius += speed
+    // Render the tilemap
+    tileRender.tiledMapRenderer.setView(g.getCamera)
+    tileRender.tiledMapRenderer.render()
 
     g.drawSchoolLogo()
   }
