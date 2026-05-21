@@ -1,5 +1,0 @@
-package map
-
-class GameMap {
-
-}
