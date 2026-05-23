@@ -2,7 +2,7 @@ package `object`
 
 import `object`.Direction.Direction
 import `trait`.Movable
-import ch.hevs.gdx2d.components.bitmaps.Spritesheet
+import ch.hevs.gdx2d.components.bitmaps.{BitmapImage, Spritesheet}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
 import com.badlogic.gdx.math.{Interpolation, Vector2}
@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.{Interpolation, Vector2}
 *
 * */
 class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with DrawableObject with Movable{
-
   /**
    * Constructor
    * Create the chaser at the given start tile.
@@ -36,18 +35,18 @@ class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with Dr
 
     this.setPosition(new Vector2(this.getLastPosition))
     if(move){
-      dt = (dt + elapsedTime)
+      dt = dt + elapsedTime
       val alpha = ((dt + frameTime * currentFrame) / (frameTime * nFrames)).toFloat
 
       this.getPosition.interpolate(this.getNewPosition, alpha, Interpolation.linear)
     } else dt = 0
 
     if (dt > frameTime) {
-      dt -= frameTime;
-      currentFrame = (currentFrame + 1) % nFrames;
+      dt -= frameTime
+      currentFrame = (currentFrame + 1) % nFrames
 
       if (currentFrame == 0) {
-        move = false;
+        move = false
         this.setLastPosition(new Vector2(this.getNewPosition))
         this.setPosition(new Vector2(this.getNewPosition))
       }
