@@ -1,6 +1,7 @@
 package `object`
 
 import `object`.Direction.Direction
+import `trait`.Movable
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
@@ -11,43 +12,18 @@ import com.badlogic.gdx.math.{Interpolation, Vector2}
 * I take it from the file Hero.java in the demoDesktop project, which was given at the beginning of the project
 *
 * */
-class Chaser extends DrawableObject {
-  private val SPRITE_WIDTH : Int = 32
-  private val SPRITE_HEIGHT : Int = 32
-  private var textureY : Int = 1
-  private var speed : Int = 1
-  private val FRAME_TIME: Float = 0.1f // Duration of each frame
-
-  private var dt : Float = 0f
-  private var currentFrame : Int = 0
-  private val nFrames: Int = 4
-
-  private var move : Boolean = false
-
-  var pythonSprite: Spritesheet = _
-  var lastPosition : Vector2 = new Vector2(0.0f,0.0f)
-  var newPosition : Vector2 = new Vector2(0.0f,0.0f)
-  var position : Vector2 = new Vector2(0.0f,0.0f)
+class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with DrawableObject with Movable{
 
   /**
+   * Constructor
    * Create the chaser at the given start tile.
    *
    * @param x Column
    * @param y Line
    */
-  def chaser(x: Int, y: Int): Unit = {
-    chaserInit(new Vector2(SPRITE_WIDTH * x, SPRITE_HEIGHT * y))
-    pythonSprite = new Spritesheet("SpriteSheet/PythonSpriteSheetNoBg.png", SPRITE_WIDTH, SPRITE_HEIGHT)
-  }
-  /**
-   * Create the chaser at the start position
-   *
-   * @param initialPosition Start position [px] on the map.
-   */
-  def chaserInit(initialPosition: Vector2): Unit = {
-    lastPosition = new Vector2(initialPosition)
-    newPosition = new Vector2(initialPosition)
-    position = new Vector2(initialPosition)
+  def this(x: Int, y: Int) = {
+    this(new Vector2(Entity.SPRITE_WIDTH * x, Entity.SPRITE_HEIGHT * y))
+    ss = new Spritesheet("SpriteSheet/PythonSpriteSheetNoBg.png", Entity.SPRITE_WIDTH, Entity.SPRITE_HEIGHT)
   }
 
   /**
@@ -56,14 +32,14 @@ class Chaser extends DrawableObject {
    * @param elapsedTime The time [s] elapsed since the last time which this method was called.
    */
   def animated(elapsedTime : Double): Unit = {
-    val frameTime = FRAME_TIME / speed
+    val frameTime = Entity.FRAME_TIME / this.getSpeed
 
-    position = new Vector2(lastPosition)
-    if(isMoving()){
-      dt = (dt + elapsedTime).toFloat
-      val alpha = (dt + frameTime * currentFrame) / (frameTime * nFrames)
+    this.setPosition(new Vector2(this.getLastPosition))
+    if(move){
+      dt = (dt + elapsedTime)
+      val alpha = ((dt + frameTime * currentFrame) / (frameTime * nFrames)).toFloat
 
-      position.interpolate(newPosition, alpha, Interpolation.linear)
+      this.getPosition.interpolate(this.getNewPosition, alpha, Interpolation.linear)
     } else dt = 0
 
     if (dt > frameTime) {
@@ -72,17 +48,10 @@ class Chaser extends DrawableObject {
 
       if (currentFrame == 0) {
         move = false;
-        lastPosition = new Vector2(newPosition);
-        position = new Vector2(newPosition);
+        this.setLastPosition(new Vector2(this.getNewPosition))
+        this.setPosition(new Vector2(this.getNewPosition))
       }
     }
-  }
-
-  /**
-   * @return True if the chaser is actually doing a step.
-   */
-  def isMoving() : Boolean ={
-    return move
   }
 
   /**
@@ -94,16 +63,16 @@ class Chaser extends DrawableObject {
     move = true
     direction match {
       case Direction.RIGHT =>
-        newPosition.add(SPRITE_WIDTH, 0)
+        this.getNewPosition.add(Entity.SPRITE_WIDTH, 0)
 
       case Direction.LEFT =>
-        newPosition.add(-SPRITE_WIDTH, 0)
+        this.getNewPosition.add(-Entity.SPRITE_WIDTH, 0)
 
       case Direction.UP =>
-        newPosition.add(0, SPRITE_HEIGHT)
+        this.getNewPosition.add(0, Entity.SPRITE_HEIGHT)
 
       case Direction.DOWN =>
-        newPosition.add(0, -SPRITE_HEIGHT)
+        this.getNewPosition.add(0, -Entity.SPRITE_HEIGHT)
 
       case _ =>
 
@@ -141,6 +110,6 @@ class Chaser extends DrawableObject {
    * @param g Graphic object.
    */
   def draw(g: GdxGraphics): Unit ={
-    g.draw(pythonSprite.sprites(textureY)(currentFrame), position.x, position.y)
+    g.draw(ss.sprites(textureY)(currentFrame), this.getPosition.x, this.getPosition.y)
   }
 }
