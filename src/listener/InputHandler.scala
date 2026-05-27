@@ -9,12 +9,11 @@ class InputHandler {
   // key management
   val keyStatus: util.Map[Integer, Boolean] = new util.TreeMap[Integer, Boolean]
 
-  def init(): Unit = {
+  def initInput(inputs: Array[Int]): Unit = {
     // init keys status
-    keyStatus.put(Input.Keys.UP, false)
-    keyStatus.put(Input.Keys.DOWN, false)
-    keyStatus.put(Input.Keys.LEFT, false)
-    keyStatus.put(Input.Keys.RIGHT, false)
+    for(i <- inputs){
+      keyStatus.put(i, false)
+    }
   }
 
 }

@@ -61,20 +61,11 @@ class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with Dr
   def go(direction: Direction): Unit = {
     move = true
     direction match {
-      case Direction.RIGHT =>
-        this.getNewPosition.add(Entity.SPRITE_WIDTH, 0)
-
-      case Direction.LEFT =>
-        this.getNewPosition.add(-Entity.SPRITE_WIDTH, 0)
-
-      case Direction.UP =>
-        this.getNewPosition.add(0, Entity.SPRITE_HEIGHT)
-
-      case Direction.DOWN =>
-        this.getNewPosition.add(0, -Entity.SPRITE_HEIGHT)
-
+      case Direction.RIGHT => this.getNewPosition.add(Entity.SPRITE_WIDTH, 0)
+      case Direction.LEFT => this.getNewPosition.add(-Entity.SPRITE_WIDTH, 0)
+      case Direction.UP => this.getNewPosition.add(0, Entity.SPRITE_HEIGHT)
+      case Direction.DOWN => this.getNewPosition.add(0, -Entity.SPRITE_HEIGHT)
       case _ =>
-
     }
     turn(direction)
   }
@@ -86,21 +77,29 @@ class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with Dr
    */
   def turn(direction: Direction): Unit = {
     direction match {
-      case Direction.RIGHT =>
-        textureY = 1
-
-      case Direction.LEFT =>
-        textureY = 2
-
-      case Direction.UP =>
-        textureY = 3
-
-      case Direction.DOWN =>
-        textureY = 0
-
+      case Direction.RIGHT => textureY = 1
+      case Direction.LEFT => textureY = 2
+      case Direction.UP => textureY = 3
+      case Direction.DOWN => textureY = 0
       case _ =>
-
     }
+  }
+
+  /**
+   * Do a step on the given direction
+   *
+   * @param direction The direction to go from object Direction.
+   */
+  def idle(direction: Direction): Unit = {
+    move = true
+    direction match {
+      case Direction.RIGHT => this.getNewPosition.add(Entity.SPRITE_WIDTH, 0)
+      case Direction.LEFT => this.getNewPosition.add(-Entity.SPRITE_WIDTH, 0)
+      case Direction.UP => this.getNewPosition.add(0, Entity.SPRITE_HEIGHT)
+      case Direction.DOWN => this.getNewPosition.add(0, -Entity.SPRITE_HEIGHT)
+      case _ =>
+    }
+    turn(direction)
   }
 
   /**
@@ -110,5 +109,23 @@ class Chaser(_initialPosition: Vector2) extends Entity(_initialPosition) with Dr
    */
   def draw(g: GdxGraphics): Unit ={
     g.draw(ss.sprites(textureY)(currentFrame), this.getPosition.x, this.getPosition.y)
+  }
+
+  /**
+   * Get the direction to take betwenn
+   *
+   * @param from
+   * @param to
+   * @return
+   */
+  def getDirection(from: Vector2, to: Vector2): Direction.Direction = {
+    // calculate the difference between two tiles position to know which direction to take
+    (to.x - from.x, to.y - from.y) match {
+      case (x, _) if x > 0 => Direction.RIGHT
+      case (x, _) if x < 0 => Direction.LEFT
+      case (_, y) if y > 0 => Direction.UP
+      case (_, y) if y < 0 => Direction.DOWN
+      case _                => Direction.NULL
+    }
   }
 }
