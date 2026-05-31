@@ -1,9 +1,6 @@
 package listener
 
-import com.badlogic.gdx.Input
-
 import java.util
-import java.util.{Map, TreeMap}
 
 class InputHandler {
   // key management

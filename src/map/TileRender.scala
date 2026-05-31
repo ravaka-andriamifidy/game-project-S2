@@ -3,7 +3,7 @@ package map
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapRenderer, TiledMapTile, TiledMapTileLayer, TiledMapTileSets, TmxMapLoader}
 import com.badlogic.gdx.math.Vector2
-import game.GameMap
+import game.GameLayer
 
 import scala.collection.mutable
 
@@ -15,8 +15,6 @@ class TileRender {
   private var _tiledMapRenderer: TiledMapRenderer= new OrthogonalTiledMapRenderer(tiledMap)
   private var _tiledLayer: TiledMapTileLayer = _tiledMap.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
   private var _tileSets: TiledMapTileSets = _tiledMap.getTileSets
-  var map: GameMap = new GameMap(_tiledMap, "Ground")
-  private var _zoom = 0.0
 
   def tiledMapRenderer: TiledMapRenderer = _tiledMapRenderer
   def tiledMap: TiledMap = _tiledMap
@@ -69,62 +67,5 @@ class TileRender {
   def getTileSpeed(tile: TiledMapTile): Float = {
     val test = tile.getProperties.get("speed").toString
     test.toFloat
-  }
-}
-
-object TileRender {
-  private val directions = List(
-    new Vector2(0, -1), new Vector2(0, 1),   // haut, bas
-    new Vector2(-1, 0), new Vector2(1, 0),   // gauche, droite
-  )
-
-  /**
-   *  distance between two tile
-   * @param a position of the start tile
-   * @param b position of the destination tile
-   * @return The distance between the 2 tiles (straight-line distance)
-   */
-  def distanceInTiles(a: Vector2, b: Vector2): Float = {
-    Math.abs(b.x - a.x) + Math.abs(b.y - a.y)
-  }
-
-  /**
-   *
-   * @param start
-   * @param goal
-   * @param gameMap
-   * @return
-   */
-  def findPath(start: Vector2, goal: Vector2, gameMap: GameMap): Option[List[Vector2]] = {
-    val openSet = mutable.PriorityQueue.empty[(Double, Vector2)](Ordering.by(-_._1))  // min-heap sur le coût
-    val cameFrom = mutable.Map.empty[Vector2, Vector2]
-    val gScore = mutable.Map(start -> 0.0).withDefaultValue(Double.MaxValue)
-
-    openSet.enqueue((distanceInTiles(start, goal), start))
-
-    while (openSet.nonEmpty) {
-      val (_, current) = openSet.dequeue()
-
-      if (current == goal) return Some(reconstructPath(cameFrom, current))
-
-      for {
-        dir      <- directions
-        neighbor  = new Vector2(current.x + dir.x, current.y + dir.y)
-        if gameMap.inBounds(neighbor.x, neighbor.y)
-        if gameMap.isWalkable(neighbor.x, neighbor.y)
-      } {
-        val tentative = gScore(current) + distanceInTiles(current, neighbor)
-        if (tentative < gScore(neighbor)) {
-          cameFrom(neighbor) = current
-          gScore(neighbor)   = tentative
-          openSet.enqueue((tentative + distanceInTiles(neighbor, goal), neighbor))
-        }
-      }
-    }
-    None  // pas de chemin trouvé
-  }
-
-  private def reconstructPath(cameFrom: mutable.Map[Vector2, Vector2], end: Vector2): List[Vector2] = {
-    Iterator.iterate(end)(cameFrom).takeWhile(cameFrom.contains).toList.reverse :+ end
   }
 }
