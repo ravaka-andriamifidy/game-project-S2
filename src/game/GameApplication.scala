@@ -4,13 +4,15 @@ import `object`.{Chaser, Direction, Player}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import com.badlogic.gdx.{Gdx, Input}
 import ch.hevs.gdx2d.lib.GdxGraphics
-import ch.hevs.gdx2d.desktop.PortableApplication
+import ch.hevs.gdx2d.desktop.{PortableApplication, Xbox}
+import com.badlogic.gdx.controllers.Controller
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.{Color, GL20, Pixmap}
 import graphics.TileRender
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import listener.InputHandler
+import listener.ControllerInputHandler
 
 class GameApplication(width: Int, height: Int) extends PortableApplication(width, height, false){
   var tileRender: TileRender = _
@@ -19,9 +21,12 @@ class GameApplication(width: Int, height: Int) extends PortableApplication(width
   var player: Player = _
   var zoom: Float = _  // must be Float
   var keyHandler: InputHandler = new InputHandler()
+  var controllerInputHandler : ControllerInputHandler = new ControllerInputHandler
   var radius: Float = 220.0f
   var time: Float = 0
   var fbo: FrameBuffer = _
+  var pos : Vector2 = new Vector2()
+
 
   /**
    * Initialize the application
@@ -76,8 +81,8 @@ class GameApplication(width: Int, height: Int) extends PortableApplication(width
     g.getCamera.project(worldPos)
     g.getShaderRenderer.setUniform("position", new Vector2(worldPos.x + 23, worldPos.y + 23))
     g.getShaderRenderer.setUniform("radius", radius)
-    g.drawShader(time)
-    time += Gdx.graphics.getDeltaTime
+//    g.drawShader(time)
+//    time += Gdx.graphics.getDeltaTime
 
     // 4. Chaser : visible only when close to the player
     val dist: Float = chaser.getPosition.dst(player.getPosition)
@@ -99,6 +104,7 @@ class GameApplication(width: Int, height: Int) extends PortableApplication(width
   }
 
   // Manage keyboard events
+  // Inspired from the demo project
   override def onKeyUp(keycode: Int): Unit = {
     super.onKeyUp(keycode)
     keyHandler.keyStatus.put(keycode, false)
@@ -113,13 +119,19 @@ class GameApplication(width: Int, height: Int) extends PortableApplication(width
     super.onDispose()
   }
 
+  override def onControllerAxisMoved(controller: Controller, axisCode: Int, value: Float): Unit = {
+    super.onControllerAxisMoved(controller, axisCode, value)
+    controllerInputHandler.handleAxisMove(axisCode,value)
+  }
   /**
    * Manage the movements of the hero using the keyboard.
    */
   private def managePlayer(): Unit = {
     // Do nothing if hero is already moving
     if (!player.move) {
-      // Compute direction and next cell
+      pos.x = controllerInputHandler.leftStickVal.x * 100
+      pos.y = controllerInputHandler.leftStickVal.y * 100
+      // Compute direction with keyboard and next cell
       var nextCell: Option[TiledMapTile] = None
       var goalDirection = Direction.NULL
 
@@ -139,6 +151,25 @@ class GameApplication(width: Int, height: Int) extends PortableApplication(width
         goalDirection = Direction.DOWN
         nextCell = tileRender.getTile(player.getPosition, 0, -1)
       }
+
+      //compute direction with the controller and next cell
+      else if (pos.x >= -50 && pos.x <= 50 && pos.y > 50) {
+          goalDirection = Direction.UP
+          nextCell = tileRender.getTile(player.getPosition, 0, 1)
+      }
+      else if (pos.x >= -50 && pos.x <= 50 && pos.y < -50) {
+        goalDirection = Direction.DOWN
+        nextCell = tileRender.getTile(player.getPosition, 0, -1)
+      }
+      else if (pos.x < -50 && pos.y >= -50 && pos.y <= 50) {
+        goalDirection = Direction.LEFT
+        nextCell = tileRender.getTile(player.getPosition, -1, 0)
+      }
+      else if (pos.x > 50 && pos.y >= -50 && pos.y <= 50) {
+        goalDirection = Direction.RIGHT
+        nextCell = tileRender.getTile(player.getPosition, 1, 0)
+      }
+
       // Is the move valid ?
       if (tileRender.isWalkable(nextCell)) {
         // Go

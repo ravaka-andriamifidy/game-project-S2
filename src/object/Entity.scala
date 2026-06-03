@@ -45,5 +45,5 @@ abstract class Entity{
 object Entity {
   val SPRITE_WIDTH: Int = 32
   val SPRITE_HEIGHT: Int = 32
-  val FRAME_TIME = 0.1f // Duration of each frime
+  val FRAME_TIME = 0.1f // Duration of each frame
 }
