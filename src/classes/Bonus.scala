@@ -9,9 +9,11 @@ import com.badlogic.gdx.math.Vector2
 import game.GameLayer
 import utils.Utils
 
-class Bonus(var bonusType: BonusType, tileX: Int, tileY: Int) {
+class Bonus() {
+
+  var bonusType: BonusType = _
   // Position in pixels on the map
-  val position: Vector2 = new Vector2(tileX * Constants.SPRITE_WIDTH, tileY * Constants.SPRITE_WIDTH)
+  var position: Vector2 = _
   private var _isCollected: Boolean = false
   var isExpired: Boolean = false
 
@@ -19,22 +21,42 @@ class Bonus(var bonusType: BonusType, tileX: Int, tileY: Int) {
   private val spritesheet = new Texture("SpriteSheet/icons.png")
 
   // Coordinates in the spritesheet according to type
-  private val (spriteCol, spriteRow): (Int, Int) = bonusType match {
-    case BonusType.TORCH    => (11, 10)
-    case BonusType.SPEED    => (2, 8)
-    case BonusType.SLOW     => (11, 21)
-    case BonusType.BLACKOUT => (2, 0)
-  }
+  private var spriteCol = 0
+  private var spriteRow = 0
 
-  private var _lifetime: Float = bonusType match {
-    case BonusType.TORCH => 20f
-    case BonusType.SPEED => 15f
-    case BonusType.SLOW => 15f
-    case BonusType.BLACKOUT => 20f
-  }
+  private var _lifetime: Float = 0f
 
   // Create the texture region by the spritesheet position
-  val region = new TextureRegion(spritesheet, spriteCol * Constants.SPRITE_WIDTH, spriteRow * Constants.SPRITE_HEIGHT, 32, 32)
+  var region: TextureRegion = _
+
+  /**
+   * Constructor
+   * Create the chaser at the given start tile.
+   *
+   *  @param bonusType bonus type
+   * @param tileX Column in the "SpriteSheet/icons.png"
+   * @param tileY Line in the "SpriteSheet/icons.png"
+   */
+  def this(bonusType: BonusType, tileX: Int, tileY: Int) = {
+    this()
+    this.bonusType = bonusType
+    position = new Vector2(tileX * Constants.SPRITE_WIDTH, tileY * Constants.SPRITE_WIDTH)
+
+    val (col, row, life) = bonusType match {
+      case BonusType.TORCH     => (11, 10, 20f)
+      case BonusType.SPEED     => (2, 8, 17f)
+      case BonusType.SLOW      => (11, 21, 17f)
+      case BonusType.BLACKOUT  => (2, 0, 22f)
+      case BonusType.IMMUNITY  => (5, 3, 15f)
+      case BonusType.IMMOBILUS => (13, 3, 18f)
+    }
+
+    spriteCol = col
+    spriteRow = row
+    _lifetime = life
+
+    region = new TextureRegion(spritesheet, spriteCol * Constants.SPRITE_WIDTH, spriteRow * Constants.SPRITE_HEIGHT, 32, 32)
+  }
 
   def lifetime: Float = _lifetime
   def lifetime_= (value: Float): Unit = _lifetime = value
@@ -54,7 +76,7 @@ class Bonus(var bonusType: BonusType, tileX: Int, tileY: Int) {
   }
 
   /**
-   * Check if the bonus is caught by a entity (chaser or player)
+   * Check if the bonus is caught by an entity (chaser or player)
    * @param entity, chaser or player
    * @param map, the layer on the map (Ground)
    * @return True if the entity and the bonus are on the same tile

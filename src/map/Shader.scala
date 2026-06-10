@@ -15,9 +15,9 @@ class Shader() {
    * @param g, Graphics
    * @param url, url of the ".cp" file
    */
-  def setShader(g: GdxGraphics, url: String = this.urlShader): Unit = {
+  def setShader(g: GdxGraphics): Unit = {
     if (g.getShaderRenderer == null) {
-      g.setShader(url)
+      g.setShader(urlShader)
     }
   }
 
