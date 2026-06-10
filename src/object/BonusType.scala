@@ -5,5 +5,5 @@ package `object`
  */
 object BonusType extends Enumeration{
   type BonusType = Value
-  val TORCH,SPEED,SLOW,BLACKOUT = Value
+  val TORCH,SPEED,SLOW,BLACKOUT,IMMOBILUS,IMMUNITY = Value
 }

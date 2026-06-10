@@ -2,7 +2,6 @@ package `trait`
 
 import `object`.Constants
 import `object`.Direction.Direction
-import com.badlogic.gdx.math.Vector2
 
 trait Movable {
   private var speed: Double = Constants.BASE_SPEED
@@ -16,6 +15,9 @@ trait Movable {
   var blackOutTimer: Float = 0f // timer for BLACKOUT MALUS
   var speedTimer: Float = 0f // timer for SPEED BONUS
   var slowTimer: Float = 0f // timer for SLOW MALUS
+  var immunityTimer: Float = 0f // timer for SLOW MALUS
+  var immobilusTimer: Float = 0f // timer for SLOW MALUS
+
 
   var hasSpeedBonus: Boolean = false
   var hasSlowBonus: Boolean = false

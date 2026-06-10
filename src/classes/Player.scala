@@ -14,7 +14,6 @@ import com.badlogic.gdx.math.{Interpolation, Vector2}
 *
 * */
 class Player(_initialPosition: Vector2) extends Entity(_initialPosition) with DrawableObject with Movable {
-
   /**
    * Constructor
    * Create the chaser at the given start tile.
